@@ -1,5 +1,5 @@
 {
-  "name": "node-express-project",
+  "name": "node-express-mysql-project",
   "version": "1.0.0",
   "private": true,
   "scripts": {
