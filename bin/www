@@ -7,6 +7,9 @@
 var app = require('../app');
 var debug = require('debug')('node-express-project:server');
 var http = require('http');
+var ON_DEATH = require('death');
+
+var mysqlpool = require('../dbconfig');
 
 /**
  * Get port from environment and store in Express.
@@ -89,4 +92,18 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-console.log('Node-Express-Server Started on http://localhost:'+port+'\n');
+/**
+ * Event listener for HTTP server "close" event.
+ * It sets the callback on SIGINT, SIGQUIT & SIGTERM.
+ */
+
+ ON_DEATH(function(signal, err) {
+   mysqlpool.end(function (err) {
+      console.log('\b\bAll connections in the pool have ended');
+      console.log('\b\bServer is going down now...');
+      server.close();
+      process.exit();
+    });
+ })
+
+console.log('Node-Express-MySQL-Server Started on http://localhost:'+port+'\n');

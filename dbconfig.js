@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 
 var pool  = mysql.createPool({
-  connectionLimit : 2,
+  connectionLimit : 10,
   queueLimit: 100,
   host : '127.0.0.1',
   port : 3306,

@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
     connection.query('SELECT * FROM mysql_table', function (error, results, fields) {
       connection.release();
       if (error) throw error;
-      res.render('index', { title: 'Express', data: JSON.stringify(results) });
+      res.render('index', { title: 'Express', data: JSON.stringify(results, null, 4) });
     });
   });
 });
