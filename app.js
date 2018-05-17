@@ -1,3 +1,4 @@
+var toobusy = require('node-toobusy');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -16,6 +17,16 @@ var routes = require('./routes');
 
 // Generating an express app
 var app = express();
+
+// middleware which blocks requests when server is too busy
+app.use(function(req, res, next) {
+  if (toobusy()) {
+    res.status(503);
+    res.send("Server is busy right now, sorry.");
+  } else {
+    next();
+  }
+});
 
 // Linking log folder and ensure directory exists
 var logDirectory = path.join(__dirname, 'log');
