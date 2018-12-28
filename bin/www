@@ -5,7 +5,7 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('node-express-project:server');
+var debug = require('debug')('node-express-mysql-project:server');
 var http = require('http');
 var ON_DEATH = require('death');
 
@@ -99,8 +99,8 @@ function onListening() {
 
  ON_DEATH(function(signal, err) {
    mysqlpool.end(function (err) {
-      console.log('\b\bAll connections in the pool have ended');
-      console.log('\b\bServer is going down now...');
+      console.log('\nAll connections in the pool have ended');
+      console.log('Server is going down now...');
       server.close();
       process.exit();
     });
