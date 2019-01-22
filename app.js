@@ -11,12 +11,16 @@ var datalogger = require('./utilities/datalogger');
 var fs = require('fs');
 var rfs = require('rotating-file-stream');
 var helmet = require('helmet');
+var compression = require('compression');
 
 // Defining routes
 var routes = require('./routes');
 
 // Generating an express app
 var app = express();
+
+// compress all responses
+app.use(compression());
 
 // middleware which blocks requests when server is too busy
 app.use(function(req, res, next) {
@@ -31,6 +35,9 @@ app.use(function(req, res, next) {
 // Linking log folder and ensure directory exists
 var logDirectory = path.join(__dirname, 'log');
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+fs.appendFile('./log/ServerData.log', '', function (err) {
+  if (err) throw err;
+});
 
 // view engine setup - Express-Handlebars
 app.engine('hbs', hbs({
@@ -42,7 +49,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 // Create a rotating write stream
-var accessLogStream = rfs('NodeExpressServer.log', {
+var accessLogStream = rfs('Server.log', {
     interval: '1d', // rotate daily
     path: logDirectory
 });
@@ -100,6 +107,18 @@ app.use(function(err, req, res, next) {
   res.send({"message":"404 Page Not Found..!"});
   // uncomment to render the error page
   // res.render('error');
+});
+
+// globally catching unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+   console.error('Unhandled Rejection at promise '+promise+' reason ', reason);
+   console.log('Server is still running...\n');
+});
+
+// globally catching unhandled exceptions
+process.on('uncaughtException', (error) => {
+   console.error('Uncaught Exception is thrown with ',error);
+   console.log('Server is still running...\n');
 });
 
 module.exports = app;

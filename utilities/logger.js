@@ -1,53 +1,49 @@
+var winston = require('winston');
+
 var LoggerUtil = {};
-var logger = require('winston');
 
-logger.setLevels({
-  error: 0,
-  warn: 1,
-  info: 2,
-  verbose: 3,
-  debug: 4,
-  silly: 5
+var logger = winston.createLogger({
+  format: winston.format.combine(
+    winston.format.colorize({
+        all: true
+    }),
+    winston.format.printf(
+        data => `${data.level} : ${data.message}`
+    )
+  ),
+  transports: [
+    new winston.transports.Console({
+      level: 'silly'
+    }),
+    new winston.transports.File({
+      level: 'silly',
+      filename: './log/ServerData.log'
+    })
+  ]
 });
 
-logger.addColors({
-  error: 'red',
-  warn: 'yellow',
-  info: 'green',
-  verbose: 'cyan',
-  debug: 'blue',
-  silly: 'magenta'
-});
-
-logger.remove(logger.transports.Console);
-
-logger.add(logger.transports.Console, {
-  level: 'silly',
-  colorize: true
-});
-
-LoggerUtil.error = function(data) {
-  logger.error(data);
+LoggerUtil.silly = (message) => {
+  logger.log('silly', message);
 }
 
-LoggerUtil.warn = function(data) {
-  logger.warn(data);
+LoggerUtil.debug = (message) => {
+  logger.log('debug', message);
 }
 
-LoggerUtil.info = function(data) {
-  logger.info(data);
+LoggerUtil.verbose = (message) => {
+  logger.log('verbose', message);
 }
 
-LoggerUtil.verbose = function(data) {
-  logger.verbose(data);
+LoggerUtil.info = (message) => {
+  logger.log('info', message);
 }
 
-LoggerUtil.debug = function(data) {
-  logger.debug(data);
+LoggerUtil.warn = (message) => {
+  logger.log('warn', message);
 }
 
-LoggerUtil.silly = function(data) {
-  logger.silly(data);
+LoggerUtil.error = (message) => {
+  logger.log('error', message);
 }
 
 module.exports = LoggerUtil;

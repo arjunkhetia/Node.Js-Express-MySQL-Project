@@ -42,12 +42,34 @@ Morgan - HTTP request logger middleware for node.js:
 ```js
 var logger = require('morgan');
 app.use(logger('dev'));
+app.use(logger(':remote-addr :remote-user :datetime :req[header] :method :url HTTP/:http-version :status :res[content-length] :res[header] :response-time[digits] :referrer :user-agent', {
+    stream: accessLogStream
+}));
 ```
 
 Winston - is designed to be a simple and universal logging library with support for multiple transports:
 
 ```js
-var logger = require('winston');
+var winston = require('winston');
+var logger = winston.createLogger({
+  format: winston.format.combine(
+    winston.format.colorize({
+        all: true
+    }),
+    winston.format.printf(
+        data => `${data.level} : ${data.message}`
+    )
+  ),
+  transports: [
+    new winston.transports.Console({
+      level: 'silly'
+    }),
+    new winston.transports.File({
+      level: 'silly',
+      filename: './log/ServerData.log'
+    })
+  ]
+});
 ```
 
 # Rotating File Stream
@@ -56,10 +78,11 @@ To provide an automated rotation of Express/Connect logs or anything else that w
 
 ```js
 var rfs    = require('rotating-file-stream');
-var stream = rfs('file.log', {
+var accessLogStream = rfs('file.log', {
     size:     '10M', // rotate every 10 MegaBytes written
-    interval: '1d',  // rotate daily
+    interval: '1d', // rotate daily
     compress: 'gzip' // compress rotated files
+    path: 'log' // folder path for log files
 });
 ```
 
