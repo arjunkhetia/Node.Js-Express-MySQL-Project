@@ -35,6 +35,31 @@ Start Express.js app with nodemon at `http://localhost:3000/`:
 $ nodemon bin/www
 ```
 
+# Nodejs Cluster
+
+Node.js runs in a single process, by default. Ideally, we want one process for each CPU core, so we can distribute the workload across all the cores. Hence improving the scalability of web apps handling HTTP requests and performance in general. In addition to this, if one worker crashes, the others are still available to handle requests.
+
+```js
+var cluster = require('cluster');
+var workers = process.env.WORKERS || require('os').cpus().length;
+
+if (cluster.isMaster) {
+  console.log('Master cluster is running on %s with %s workers', process.pid, workers);
+  for (var i = 0; i < workers; ++i) {
+    var worker = cluster.fork().process;
+    console.log('worker %s on %s started', i+1, worker.pid);
+  }
+  cluster.on('exit', function(worker, code, signal) {
+    console.log('worker %s died. restarting...', worker.process.pid);
+    cluster.fork();
+  });
+}
+
+if (cluster.isWorker) {
+  // Server code
+}
+```
+
 # Logger - Morgan & Winston
 
 Morgan - HTTP request logger middleware for node.js:

@@ -1,109 +1,106 @@
 #!/usr/bin/env node
-
 /**
  * Module dependencies.
  */
+var cluster = require('cluster');
+// comment below line to start cluster with maximum workers
+var workers = 1;
+// uncomment below line to start cluster with maximum workers
+// var workers = process.env.WORKERS || require('os').cpus().length;
 
-var app = require('../app');
-var debug = require('debug')('node-express-mysql-project:server');
-var http = require('http');
-var ON_DEATH = require('death');
-
-var mysqlpool = require('../dbconfig');
-
-/**
- * Get port from environment and store in Express.
- */
-
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
-function normalizePort(val) {
-  var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
+if (cluster.isMaster) {
+  console.log('Master cluster is running on %s with %s workers', process.pid, workers);
+  for (var i = 0; i < workers; ++i) {
+    var worker = cluster.fork().process;
+    console.log('worker %s on %s started', i+1, worker.pid);
   }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
+  cluster.on('exit', function(worker, code, signal) {
+    console.log('worker %s died. restarting...', worker.process.pid);
+    cluster.fork();
+  });
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
+if (cluster.isWorker) {
+  var app = require('../app');
+  var debug = require('debug')('node-express-mysql-project:server');
+  var http = require('http');
+  var ON_DEATH = require('death');
+  var mysqlpool = require('../dbconfig');
+  /**
+   * Get port from environment and store in Express.
+   */
+  var port = normalizePort(process.env.PORT || '3000');
+  app.set('port', port);
+  /**
+   * Create HTTP server.
+   */
+  var server = http.createServer(app);
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+  /**
+   * Normalize a port into a number, string, or false.
+   */
+  function normalizePort(val) {
+    var port = parseInt(val, 10);
+    if (isNaN(port)) {
+      // named pipe
+      return val;
+    }
+    if (port >= 0) {
+      // port number
+      return port;
+    }
+    return false;
   }
-
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
+  /**
+   * Event listener for HTTP server "error" event.
+   */
+  function onError(error) {
+    if (error.syscall !== 'listen') {
       throw error;
+    }
+    var bind = typeof port === 'string'
+      ? 'Pipe ' + port
+      : 'Port ' + port;
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+      case 'EACCES':
+        console.error(bind + ' requires elevated privileges');
+        process.exit(1);
+        break;
+      case 'EADDRINUSE':
+        console.error(bind + ' is already in use');
+        process.exit(1);
+        break;
+      default:
+        throw error;
+    }
   }
+  /**
+   * Event listener for HTTP server "listening" event.
+   */
+  function onListening() {
+    var addr = server.address();
+    var bind = typeof addr === 'string'
+      ? 'pipe ' + addr
+      : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+  }
+  /**
+   * Event listener for HTTP server "close" event.
+   * It sets the callback on SIGINT, SIGQUIT & SIGTERM.
+   */
+   ON_DEATH(function(signal, err) {
+     mysqlpool.end(function (err) {
+        console.log('\nAll connections in the pool have ended');
+        console.log('Server is going down now...');
+        server.close();
+        process.exit();
+      });
+   });
+  console.log('Node-Express-MySQL-Server Started on http://localhost:'+port+'\n');
 }
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}
-
-/**
- * Event listener for HTTP server "close" event.
- * It sets the callback on SIGINT, SIGQUIT & SIGTERM.
- */
-
- ON_DEATH(function(signal, err) {
-   mysqlpool.end(function (err) {
-      console.log('\nAll connections in the pool have ended');
-      console.log('Server is going down now...');
-      server.close();
-      process.exit();
-    });
- })
-
-console.log('Node-Express-MySQL-Server Started on http://localhost:'+port+'\n');
