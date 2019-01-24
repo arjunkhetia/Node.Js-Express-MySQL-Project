@@ -19,6 +19,37 @@ var routes = require('./routes');
 // Generating an express app
 var app = express();
 
+// Express Status Monitor for monitoring server status
+app.use(require('express-status-monitor')({
+  title: 'Server Status',
+  path: '/status',
+  // websocket: existingSocketIoInstance,
+  spans: [{
+    interval: 1,
+    retention: 60
+  }, {
+    interval: 5,
+    retention: 60
+  }, {
+    interval: 15,
+    retention: 60
+  }],
+  chartVisibility: {
+    cpu: true,
+    mem: true,
+    load: true,
+    responseTime: true,
+    rps: true,
+    statusCodes: true
+  },
+  healthChecks: [{
+    protocol: 'http',
+    host: 'localhost',
+    path: '/',
+    port: '3000'
+  }]
+}));
+
 // compress all responses
 app.use(compression());
 
