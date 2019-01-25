@@ -161,7 +161,7 @@ app.use(require('express-status-monitor')({
 }));
 ```
 
-![Monitoring Page](http://i.imgur.com/AHizEWq.gif "Monitoring Page")
+![Monitoring Page](https://github.com/arjunkhetia/Node.Js-Express-MySQL-Project/blob/master/public/status-monitor.png "Monitoring Page")
 
 [version-image]: https://img.shields.io/badge/Version-1.0.0-orange.svg
 [linuxbuild-image]: https://img.shields.io/badge/Linux-passing-brightgreen.svg
