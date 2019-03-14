@@ -8,23 +8,23 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
-    "cookie-parser": "^1.4.3",
+    "cookie-parser": "^1.4.4",
     "death": "^1.1.0",
     "debug": "^4.1.1",
     "express": "^4.16.4",
-    "express-handlebars": "^3.0.0",
+    "express-handlebars": "^3.0.2",
     "express-status-monitor": "^1.2.3",
-    "hbs": "^4.0.1",
-    "helmet": "^3.15.0",
+    "hbs": "^4.0.3",
+    "helmet": "^3.16.0",
     "morgan": "^1.9.1",
     "mysql": "^2.16.0",
     "node-toobusy": "^0.6.3",
     "request": "^2.88.0",
     "rotating-file-stream": "^1.4.0",
     "serve-favicon": "^2.5.0",
-    "winston": "^3.1.0"
+    "winston": "^3.2.1"
   },
   "devDependencies": {
-    "nodemon": "^1.18.9"
+    "nodemon": "^1.18.10"
   }
 }
