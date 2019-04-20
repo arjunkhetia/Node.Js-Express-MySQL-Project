@@ -13,11 +13,11 @@
     "debug": "^4.1.1",
     "express": "^4.16.4",
     "express-handlebars": "^3.0.2",
-    "express-status-monitor": "^1.2.3",
-    "hbs": "^4.0.3",
+    "express-status-monitor": "^1.2.5",
+    "hbs": "^4.0.4",
     "helmet": "^3.16.0",
     "morgan": "^1.9.1",
-    "mysql": "^2.16.0",
+    "mysql": "^2.17.1",
     "node-toobusy": "^0.6.3",
     "request": "^2.88.0",
     "rotating-file-stream": "^1.4.0",
@@ -25,6 +25,6 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "nodemon": "^1.18.10"
+    "nodemon": "^1.18.11"
   }
 }
