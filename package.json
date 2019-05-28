@@ -11,8 +11,8 @@
     "cookie-parser": "^1.4.4",
     "death": "^1.1.0",
     "debug": "^4.1.1",
-    "express": "^4.16.4",
-    "express-handlebars": "^3.0.2",
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
     "express-status-monitor": "^1.2.5",
     "hbs": "^4.0.4",
     "helmet": "^3.18.0",
@@ -25,6 +25,6 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "nodemon": "^1.19.0"
+    "nodemon": "^1.19.1"
   }
 }
