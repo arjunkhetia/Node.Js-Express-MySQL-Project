@@ -80,8 +80,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 // Create a rotating write stream
-var accessLogStream = rfs('Server.log', {
+var accessLogStream = rfs.createStream('Server.log', {
+    size: "10M", // rotate every 10 MegaBytes written
     interval: '1d', // rotate daily
+    compress: "gzip", // compress rotated files
     path: logDirectory
 });
 

@@ -20,11 +20,11 @@
     "mysql": "^2.17.1",
     "node-toobusy": "^0.6.3",
     "request": "^2.88.0",
-    "rotating-file-stream": "^1.4.6",
+    "rotating-file-stream": "^2.0.0",
     "serve-favicon": "^2.5.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "nodemon": "^1.19.4"
+    "nodemon": "^2.0.2"
   }
 }
