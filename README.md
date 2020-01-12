@@ -35,6 +35,23 @@ Start Express.js app with nodemon at `http://localhost:3000/`:
 $ nodemon bin/www
 ```
 
+# Node PortFinder
+
+Node PortFinder is a tool to find an open port or domain socket on the machine.
+
+```js
+var portfinder = require('portfinder');
+var port = 3000;
+var portSpan = 999;
+portfinder.getPort({
+  port: port,    // minimum port number
+  stopPort: port + portSpan // maximum port number
+}, function (err, openPort) {
+  if (err) throw err;
+  port = openPort;
+});
+```
+
 # Nodejs Cluster
 
 Node.js runs in a single process, by default. Ideally, we want one process for each CPU core, so we can distribute the workload across all the cores. Hence improving the scalability of web apps handling HTTP requests and performance in general. In addition to this, if one worker crashes, the others are still available to handle requests.
